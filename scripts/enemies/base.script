@@ -1,0 +1,36 @@
+go.property("hp", 30)
+
+local animate = require("scripts.utils.animation")
+
+function init(self)
+    self.tinting = false
+    self.dead = false
+end
+
+local DEATH = hash("death")
+
+function get_damage(self, hp)
+    if self.dead then
+        return
+    end
+    self.hp = self.hp - hp
+    if not self.tinting then
+        self.tinting = true
+        go.animate("#sprite", "tint", go.PLAYBACK_ONCE_PINGPONG,
+            vmath.vector4(1, 0, 0, 1), go.EASING_LINEAR, 0.2, 0, function() self.tinting = false end);
+    end
+    if self.hp <= 0 then
+        self.dead = true
+        msg.post(".", "dead")
+        animate:play_animation(self, "#sprite", DEATH, true, function()
+            go.delete()
+        end)
+        return
+    end
+end
+
+function on_message(self, message_id, message, sender)
+    if message_id == hash("make_damage") then
+        get_damage(self, message.hp)
+    end
+end

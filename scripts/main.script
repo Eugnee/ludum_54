@@ -1,0 +1,24 @@
+function init(self)
+	msg.post(".", "acquire_input_focus")
+	msg.post("#menu_proxy", "load")
+	sound.play("#music")
+end
+
+function final(self)
+	msg.post(".", "release_input_focus")
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == hash("start") then
+		msg.post("#menu_proxy", "unload")
+		msg.post("#controller_proxy", "load")
+	elseif message_id == hash("show_menu") then
+		msg.post("#menu_proxy", "load")
+		msg.post("#controller_proxy", "unload")
+	elseif message_id == hash("exit") then
+		sys.exit(0)
+	elseif message_id == hash("proxy_loaded") then
+		msg.post(sender, "enable")
+	elseif message_id == hash("proxy_unloaded") then
+	end
+end

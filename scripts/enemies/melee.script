@@ -1,0 +1,42 @@
+go.property("damage", 10)
+local animate = require("scripts.utils.animation")
+
+local TRIGGER_RESPONSE = hash("trigger_response")
+local HERO = hash("hero")
+local DEAD = hash("dead")
+
+function init(self)
+    self.dead = false
+end
+
+local ATTACK_ANIM = hash("attack")
+local MOVE_ANIM = hash("move")
+
+local function attack(enemy_id)
+    local function decorated_attack(self)
+        if self.dead then
+            return
+        end
+        animate:play_animation(self, "#sprite", ATTACK_ANIM, true, function(self)
+            self.locked_anim = false
+            animate:play_animation(self, "#sprite", MOVE_ANIM, false)
+        end)
+        msg.post(enemy_id, "make_damage", { hp = self.damage })
+    end
+    return decorated_attack
+end
+
+function on_message(self, message_id, message, sender)
+    if message_id == TRIGGER_RESPONSE and message.other_group == HERO then
+        if message.enter then
+            self.attacking = true
+            self.attacker = timer.delay(1, true, attack(message.other_id))
+            timer.trigger(self.attacker)
+        else
+            self.attacking = false
+            timer.cancel(self.attacker)
+        end
+    elseif message_id == DEAD then
+        self.dead = true
+    end
+end

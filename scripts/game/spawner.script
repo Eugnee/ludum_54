@@ -1,0 +1,86 @@
+local HERO_Z_INDEX = 0.21
+local UNITS_Z_INDEX = 0.2
+
+local random = math.random
+local randomseed = math.randomseed
+local ceil = math.ceil
+randomseed(os.time())
+
+local SPAWN_HERO = hash("spawn_hero")
+local SPAWN_ENEMIES = hash("spawn_enemies")
+
+local MAX_DRAGONS = 3
+local MAX_BUBBLES = 5
+
+local function spawn_hero(hp, spawn_point)
+	spawn_point.z = HERO_Z_INDEX
+	return factory.create("/base/factories#hero", spawn_point, nil,
+		{ bullet_url = msg.url("/base/factories#bullet"), hp = hp })
+end
+
+function coords_to_screen(x, y, tile_size)
+	local scrx = tile_size * x + tile_size / 2
+	local scry = tile_size * y + tile_size / 2
+	return scrx, scry
+end
+
+local function random_unit_pos(self)
+	local num = random(1, self.free_tiles_count - 1)
+	local rand_tile = self.free_tiles[num]
+	local while_counter = 0
+	while rand_tile == nil and while_counter <= 5 do
+		num = random(1, self.free_tiles_count - 1)
+		rand_tile = self.free_tiles[num]
+		while_counter = while_counter + 1
+	end
+	x, y = coords_to_screen(rand_tile.x, rand_tile.y, 16)
+	self.free_tiles[num] = nil
+	return vmath.vector3(x, y, UNITS_Z_INDEX)
+end
+
+local function spawn_bubble(self)
+	return factory.create("/base/factories#bubble", random_unit_pos(self), nil, { hero_id = self.hero_id })
+end
+
+local function spawn_dragon(self)
+	return factory.create("/base/factories#dragon", random_unit_pos(self), nil,
+		{ hero_id = self.hero_id, bullet_url = msg.url("/base/factories#enemy_bullet") })
+end
+
+function init(self)
+	local level_x, level_y, w, h = tilemap.get_bounds("/map#map")
+	self.free_tiles = {}
+	self.free_tiles_count = 1
+	local mid_y = ceil(h / 2)
+	for y = mid_y, h - 10 do
+		for x = 5, w - 5 do
+			if tilemap.get_tile("/map#map", hash("floor"), x, y) > 0 then
+				self.free_tiles[self.free_tiles_count] = { x = x, y = y }
+				self.free_tiles_count = self.free_tiles_count + 1
+			end
+		end
+	end
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == SPAWN_HERO then
+		self.hero_id = spawn_hero(message.hp, message.spawn_point)
+	elseif message_id == SPAWN_ENEMIES then
+		local bubbles_count = random(1, message.difficulty)
+		if bubbles_count > MAX_BUBBLES then
+			bubbles_count = MAX_BUBBLES
+		end
+		for i = 1, bubbles_count do
+			spawn_bubble(self)
+		end
+		local dragons_count = random(0, message.difficulty - 1)
+		if dragons_count > MAX_DRAGONS then
+			dragons_count = MAX_DRAGONS
+		end
+		if dragons_count > 0 then
+			for i = 1, dragons_count do
+				spawn_dragon(self)
+			end
+		end
+	end
+end

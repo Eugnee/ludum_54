@@ -1,0 +1,49 @@
+local random = math.random
+local rad = math.rad
+local cos = math.cos
+local sin = math.sin
+
+go.property("step", 20)
+local CONTACT_POINT_RESPONSE = hash("contact_point_response")
+
+local function vector_from_angle(degree, step)
+    local r = rad(degree)
+    return vmath.vector3(cos(r) * step, sin(r) * step, 0);
+end
+
+local function get_new_target(step)
+    pos = go.get_position()
+    local rand = random(0, 360)
+    return pos + vector_from_angle(rand, step)
+end
+
+local function random_mov(self)
+    self.target = get_new_target(self.step)
+end
+
+function init(self)
+    self.wanderer = timer.delay(1, true, random_mov)
+    timer.trigger(self.wanderer)
+    self.target = go.get_position()
+    self.correction = vmath.vector3()
+end
+
+function update(self, dt)
+    local dir = self.target - go.get_position()
+    go.set_position(go.get_position() + dir * dt)
+end
+
+function on_message(self, message_id, message, sender)
+    if message_id == CONTACT_POINT_RESPONSE then
+        if message.distance > 0 then
+            local proj = vmath.project(self.correction,
+                message.normal * message.distance);
+            if (proj < 1) then
+                local comp = (message.distance - message.distance * proj) *
+                    message.normal;
+                go.set_position(go.get_position() + comp);
+                self.correction = self.correction + comp;
+            end
+        end
+    end
+end

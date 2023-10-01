@@ -1,0 +1,53 @@
+local random = math.random
+local randomseed = math.randomseed
+local maps = { "sci_fi", "mushrooms", "orangery" }
+local maps_count = 3
+
+randomseed(os.time())
+
+local spawn_points = {
+    sci_fi = vmath.vector3(150, 70, 0),
+    mushrooms = vmath.vector3(220, 130, 0),
+    orangery = vmath.vector3(220, 130, 0)
+}
+
+
+local function change_level(self)
+    -- if self.current_map ~= nil then
+    --     msg.post("/levels#" .. self.current_map, "unload")
+    -- end
+    local map = maps[random(1, maps_count)]
+    self.current_map = map
+    map = "/levels#" .. map
+    msg.post(map, "load")
+    self.difficulty = self.difficulty + 1
+end
+
+
+function init(self)
+    msg.post(".", "acquire_input_focus")
+    self.changing_level = false
+    self.difficulty = 0
+    change_level(self)
+end
+
+function final(self)
+    msg.post(".", "release_input_focus")
+end
+
+function on_message(self, message_id, message, sender)
+    if message_id == hash("proxy_loaded") then
+        msg.post(self.current_map .. ":/base/spawner", "spawn_hero",
+            { hp = 100, spawn_point = spawn_points[self.current_map] })
+        msg.post(self.current_map .. ":/base/spawner", "spawn_enemies", { difficulty = self.difficulty })
+        msg.post(sender, "enable")
+    elseif message_id == hash("proxy_unloaded") then
+        if self.changing_level then
+            self.changing_level = false
+            change_level(self)
+        end
+    elseif message_id == hash("change_level") then
+        msg.post("/levels#" .. self.current_map, "unload")
+        self.changing_level = true
+    end
+end

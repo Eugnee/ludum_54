@@ -1,0 +1,26 @@
+go.property("speed", 200)
+go.property("damage", 10)
+
+local HERO = hash("hero")
+local BLOCKED = hash("blocked")
+local TRIGGER_RESPONSE = hash("trigger_response")
+
+
+function update(self, dt)
+	local pos = go.get_position()
+	local d = vmath.rotate(go.get_rotation(), vmath.vector3(0, 1, 0))
+	pos = pos + d * self.speed * dt
+	go.set_position(pos)
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == TRIGGER_RESPONSE and message.enter
+	then
+		if message.other_group == BLOCKED then
+			go.delete()
+		elseif message.other_group == HERO then
+			msg.post(message.other_id, "make_damage", { hp = self.damage })
+			go.delete()
+		end
+	end
+end

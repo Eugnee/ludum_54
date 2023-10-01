@@ -1,0 +1,45 @@
+go.property("damage", 10)
+go.property("hero_id", hash(""))
+go.property("bullet_url", msg.url())
+
+local animate = require("scripts.utils.animation")
+local DEAD = hash("dead")
+
+function init(self)
+    self.dead = false
+end
+
+local ATTACK_ANIM = hash("attack-move")
+local MOVE_ANIM = hash("move")
+local BULLET_OFFSET = vmath.vector3(0, 3, 0)
+
+local function spawn_bullet(self)
+    local direction = go.get_world_position(self.hero_id) - go.get_world_position()
+    local angle = -math.atan2(direction.x, direction.y)
+    local quat = vmath.quat_rotation_z(angle)
+    local pos = go.get_world_position() + vmath.rotate(quat, BULLET_OFFSET)
+    -- TODO: get from properties
+    pos.z = 0.21
+    factory.create(self.bullet_url, pos, quat)
+end
+
+local function attack(self)
+    if self.dead then
+        return
+    end
+    animate:play_animation(self, "#sprite", ATTACK_ANIM, true, function(self)
+        self.locked_anim = false
+        animate:play_animation(self, "#sprite", MOVE_ANIM, false)
+    end, spawn_bullet)
+end
+
+
+function init(self)
+    self.wanderer = timer.delay(2, true, attack)
+end
+
+function on_message(self, message_id, message, sender)
+    if message_id == DEAD then
+        self.dead = true
+    end
+end

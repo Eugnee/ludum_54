@@ -1,0 +1,37 @@
+go.property("hero_id", hash(""))
+go.property("speed", 25)
+
+local CONTACT_POINT_RESPONSE = hash("contact_point_response")
+
+function init(self)
+    self.attacking = false
+    self.correction = vmath.vector3()
+end
+
+function update(self, dt)
+    target_position = go.get_position(self.hero_id)
+    local pos = go.get_world_position()
+    local direction = target_position - pos
+    if vmath.length(direction) > 0 then
+        direction = vmath.normalize(direction);
+    end
+    if not self.attacking then
+        go.set_position(pos + direction * self.speed * dt)
+    end
+    self.correction = vmath.vector3()
+end
+
+function on_message(self, message_id, message, sender)
+    if message_id == CONTACT_POINT_RESPONSE then
+        if message.distance > 0 then
+            local proj = vmath.project(self.correction,
+                message.normal * message.distance);
+            if (proj < 1) then
+                local comp = (message.distance - message.distance * proj) *
+                    message.normal;
+                go.set_position(go.get_position() + comp);
+                self.correction = self.correction + comp;
+            end
+        end
+    end
+end

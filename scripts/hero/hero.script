@@ -1,0 +1,158 @@
+go.property("hp", 100)
+go.property("speed", 25)
+go.property("bullet_url", msg.url())
+go.property("damage", 10)
+
+local animate = require("scripts.utils.animation")
+
+function init(self)
+  msg.post(".", "acquire_input_focus")
+  self.direction = vmath.vector3(0, 0, 0)
+  self.prev_direction = vmath.vector3(0, -1, 0)
+  self.current_animation = nil
+  self.correction = vmath.vector3()
+  self.attacking = false
+  self.locked_anim = false
+  self.tinting = false
+  self.max_hp = self.hp
+  self.interaction = {}
+  msg.post("#weapon", "disable")
+end
+
+function final()
+  msg.post(".", "release_input_focus")
+end
+
+local BULLET_OFFSET = vmath.vector3(0, 7, 0)
+
+local function spawn_bullet(bullet_url, quat, properties)
+  factory.create(bullet_url, go.get_world_position() + vmath.rotate(quat, BULLET_OFFSET), quat,
+    properties)
+end
+
+local function get_anim_name_by_direction(direction)
+  if direction.x == -1 then
+    return "left"
+  elseif direction.x == 1 then
+    return "right"
+  elseif direction.y == 1 then
+    return "up"
+  elseif direction.y == -1 then
+    return "down"
+  end
+  return "down"
+end
+
+local function get_damage(self, hp)
+  self.hp = self.hp - hp
+  if not self.tinting then
+    self.tinting = true
+    go.animate("#sprite", "tint", go.PLAYBACK_ONCE_PINGPONG,
+      vmath.vector4(1, 0, 0, 1), go.EASING_LINEAR, 0.2, 0, function() self.tinting = false end);
+  end
+  if self.hp <= 0 then
+    msg.post("main:/main", "show_menu")
+    return
+  end
+end
+
+
+local function shot(self)
+  local direction = self.direction
+  if vmath.length(direction) < 1 then
+    direction = self.prev_direction
+  end
+  local angle = -math.atan2(direction.x, direction.y)
+  local quat = vmath.quat_rotation_z(angle)
+  spawn_bullet(self.bullet_url, quat, { damage = self.damage })
+end
+
+local function attack_done(self)
+  self.locked_anim = false
+  msg.post("#weapon", "disable")
+end
+
+local function attack(self, is_moved, anim)
+  if anim ~= "up" then
+    animate:play_animation(self, "#weapon", anim)
+    msg.post("#weapon", "enable")
+  end
+  if is_moved then
+    anim = anim .. "-walk"
+  end
+  local anim = hash("attack-" .. anim)
+  animate:play_animation(self, "#sprite", anim, true, attack_done, shot)
+end
+
+function update(self, dt)
+  local is_moved = vmath.length_sqr(self.direction) > 0
+  if is_moved then
+    anim = get_anim_name_by_direction(self.direction)
+    go.set_position(go.get_position() + vmath.normalize(self.direction) * self.speed * dt)
+    self.prev_direction = self.direction
+  else
+    anim = get_anim_name_by_direction(self.prev_direction)
+  end
+  if not self.attacking then
+    if is_moved then
+      anim = hash(anim)
+    else
+      anim = hash("idle-" .. anim)
+    end
+    animate:play_animation(self, "#sprite", anim)
+  else
+    attack(self, is_moved, anim)
+  end
+  self.direction = vmath.vector3()
+  self.correction = vmath.vector3()
+  self.attacking = false
+end
+
+function on_input(self, action_id, action)
+  if action_id == hash("left") then
+    self.direction.x = -1
+  elseif action_id == hash("right") then
+    self.direction.x = 1
+  elseif action_id == hash("up") then
+    self.direction.y = 1
+  elseif action_id == hash("down") then
+    self.direction.y = -1
+  elseif action_id == hash("space")
+      and action.pressed
+      and not self.attacking then
+    self.attacking = true
+  elseif action_id == hash("interact") and action.pressed then
+    for k, v in pairs(self.interaction) do
+      if v then
+        msg.post(k, "interact")
+      end
+    end
+  end
+end
+
+function on_message(self, message_id, message, sender)
+  if message_id == hash("trigger_response") then
+    if message.enter then
+      if message.own_group == hash("interactor") then
+        self.interaction[message.other_id] = true
+      end
+    else
+      if message.own_group == hash("interactor") then
+        self.interaction[message.other_id] = false
+      end
+    end
+  elseif message_id == hash("contact_point_response") then
+    if message.distance > 0 then
+      local proj = vmath.project(self.correction,
+        message.normal * message.distance);
+      if (proj < 1) then
+        local comp = (message.distance - message.distance * proj) *
+            message.normal;
+        go.set_position(go.get_position() + comp);
+        self.correction = self.correction + comp;
+      end
+    end
+  elseif message_id == hash("make_damage") then
+    get_damage(self, message.hp)
+  end
+end

@@ -1,0 +1,48 @@
+go.property("speed", 200)
+go.property("damage", 10)
+
+local ENEMY = hash("enemy")
+local HERO = hash("hero")
+local BLOCKED = hash("blocked")
+local TRIGGER_RESPONSE = hash("trigger_response")
+
+local random = math.random
+
+function init(self)
+	self.col_count = 0
+	-- bullet always collide hero on start
+	self.first_hero_col = true
+end
+
+function update(self, dt)
+	local pos = go.get_position()
+	local d = vmath.rotate(go.get_rotation(), vmath.vector3(0, 1, 0))
+	pos = pos + d * self.speed * dt
+	go.set_position(pos)
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == TRIGGER_RESPONSE and message.enter
+	then
+		if message.other_group == BLOCKED then
+			if self.col_count >= 3 then
+				go.delete()
+				return
+			end
+			self.col_count = self.col_count + 1
+			local degree = 180 + (self.col_count * random(-15, 15))
+			local world_quat = vmath.quat_rotation_z(math.rad(degree))
+			go.set_rotation(go.get_rotation() * world_quat)
+		elseif message.other_group == HERO then
+			if self.first_hero_col then
+				self.first_hero_col = false
+				return
+			end
+			go.delete()
+			msg.post(message.other_id, "make_damage", { hp = self.damage })
+		else
+			go.delete()
+			msg.post(message.other_id, "make_damage", { hp = self.damage })
+		end
+	end
+end
