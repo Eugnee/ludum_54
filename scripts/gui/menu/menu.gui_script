@@ -28,17 +28,20 @@ function final(self)
 end
 
 function on_input(self, action_id, action)
-	if action_id == hash("up") and action.pressed then
-		if self.index > 1 then
-			self.index = self.index - 1
-			highlight_node(self)
-		end
-	elseif action_id == hash("down") then
-		if self.index < self.max_index then
-			self.index = self.index + 1
-			highlight_node(self)
-		end
-	elseif action_id == hash("enter") and action.pressed then
-		msg.post("main:/main#main", self.cur_state)
-	end
+	-- if action_id == hash("up") and action.pressed then
+	-- 	if self.index > 1 then
+	-- 		self.index = self.index - 1
+	-- 		highlight_node(self)
+	-- 	end
+	-- elseif action_id == hash("down") then
+	-- 	if self.index < self.max_index then
+	-- 		self.index = self.index + 1
+	-- 		highlight_node(self)
+	-- 	end
+	-- elseif action_id == hash("enter") and action.pressed then
+	-- 	msg.post("main:/main#main", self.cur_state)
+	-- end
+	if action_id == hash("space") and action.pressed then
+        msg.post("main:/main#main", self.cur_state)
+    end
 end
