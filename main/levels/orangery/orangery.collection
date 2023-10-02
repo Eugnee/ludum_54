@@ -3,8 +3,8 @@ instances {
   id: "change_trigger"
   prototype: "/main/levels/change_trigger.go"
   position {
-    x: 176.0
-    y: 305.0
+    x: 177.0
+    y: 373.0
     z: 0.0
   }
   rotation {
