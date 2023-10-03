@@ -13,6 +13,6 @@ height = 640
 input_method = HiddenInputField
 
 [project]
-title = Limited space
+title = Limitverse
 dependencies#0 = https://github.com/britzl/defold-orthographic/archive/master.zip
 
