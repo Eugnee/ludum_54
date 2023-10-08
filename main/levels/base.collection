@@ -180,7 +180,7 @@ embedded_instances {
   data: "embedded_components {\n"
   "  id: \"sprite\"\n"
   "  type: \"sprite\"\n"
-  "  data: \"tile_set: \\\"/main/gui/menu/menu_gr.atlas\\\"\\n"
+  "  data: \"tile_set: \\\"/main/gui/gui.atlas\\\"\\n"
   "default_animation: \\\"GAME-FRAME1\\\"\\n"
   "material: \\\"/builtins/materials/sprite.material\\\"\\n"
   "blend_mode: BLEND_MODE_ALPHA\\n"

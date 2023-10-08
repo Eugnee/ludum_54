@@ -1,5 +1,5 @@
 go.property("hp", 100)
-go.property("speed", 25)
+go.property("speed", 45)
 go.property("bullet_url", msg.url())
 go.property("damage", 10)
 
@@ -24,6 +24,9 @@ function final()
 end
 
 local BULLET_OFFSET = vmath.vector3(0, 7, 0)
+local CONTACT_POINT_RESPONSE = hash("contact_point_response")
+local TRIGGER_RESPONSE = hash("trigger_response")
+local MAKE_DAMAGE = hash("make_damage")
 
 local function spawn_bullet(bullet_url, quat, properties)
   factory.create(bullet_url, go.get_world_position() + vmath.rotate(quat, BULLET_OFFSET), quat,
@@ -50,10 +53,7 @@ local function get_damage(self, hp)
     go.animate("#sprite", "tint", go.PLAYBACK_ONCE_PINGPONG,
       vmath.vector4(1, 0, 0, 1), go.EASING_LINEAR, 0.2, 0, function() self.tinting = false end);
   end
-  if self.hp <= 0 then
-    msg.post("main:/main", "show_menu")
-    return
-  end
+  msg.post("controller:/state#hero_state", "change_hp", { hp = self.hp })
 end
 
 
@@ -131,7 +131,7 @@ function on_input(self, action_id, action)
 end
 
 function on_message(self, message_id, message, sender)
-  if message_id == hash("trigger_response") then
+  if message_id == TRIGGER_RESPONSE then
     if message.enter then
       if message.own_group == hash("interactor") then
         self.interaction[message.other_id] = true
@@ -141,7 +141,7 @@ function on_message(self, message_id, message, sender)
         self.interaction[message.other_id] = false
       end
     end
-  elseif message_id == hash("contact_point_response") then
+  elseif message_id == CONTACT_POINT_RESPONSE then
     if message.distance > 0 then
       local proj = vmath.project(self.correction,
         message.normal * message.distance);
@@ -152,7 +152,7 @@ function on_message(self, message_id, message, sender)
         self.correction = self.correction + comp;
       end
     end
-  elseif message_id == hash("make_damage") then
+  elseif message_id == MAKE_DAMAGE then
     get_damage(self, message.hp)
   end
 end

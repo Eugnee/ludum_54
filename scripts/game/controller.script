@@ -3,6 +3,11 @@ local randomseed = math.randomseed
 local maps = { "sci_fi", "mushrooms", "orangery" }
 local maps_count = 3
 
+local PROXY_LOADED = hash("proxy_loaded")
+local PROXY_UNLOADED = hash("proxy_unloaded")
+local CHANGE_LEVEL = hash("change_level")
+local END_GAME = hash("end_game")
+
 randomseed(os.time())
 
 local spawn_points = {
@@ -25,29 +30,31 @@ end
 
 
 function init(self)
-    msg.post(".", "acquire_input_focus")
+    msg.post("/levels", "acquire_input_focus")
     self.changing_level = false
     self.difficulty = 0
     change_level(self)
 end
 
 function final(self)
-    msg.post(".", "release_input_focus")
+    msg.post("/levels", "release_input_focus")
 end
 
 function on_message(self, message_id, message, sender)
-    if message_id == hash("proxy_loaded") then
+    if message_id == PROXY_LOADED then
         msg.post(self.current_map .. ":/base/spawner", "spawn_hero",
-            { hp = 100, spawn_point = spawn_points[self.current_map] })
+            { hp = go.get("/state#hero_state", "hp"), spawn_point = spawn_points[self.current_map] })
         msg.post(self.current_map .. ":/base/spawner", "spawn_enemies", { difficulty = self.difficulty })
         msg.post(sender, "enable")
-    elseif message_id == hash("proxy_unloaded") then
+    elseif message_id == PROXY_UNLOADED then
         if self.changing_level then
             self.changing_level = false
             change_level(self)
         end
-    elseif message_id == hash("change_level") then
+    elseif message_id == CHANGE_LEVEL then
         msg.post("/levels#" .. self.current_map, "unload")
         self.changing_level = true
+    elseif message_id == END_GAME then
+        msg.post("main:/main#main", END_GAME, { points = message.monsters_count })
     end
 end
