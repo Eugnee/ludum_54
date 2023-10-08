@@ -22,6 +22,10 @@ local function change_level(self)
     --     msg.post("/levels#" .. self.current_map, "unload")
     -- end
     local map = maps[random(1, maps_count)]
+    if map == self.current_map then
+        change_level(self)
+        return
+    end
     self.current_map = map
     map = "/levels#" .. map
     msg.post(map, "load")
@@ -47,13 +51,9 @@ function on_message(self, message_id, message, sender)
         msg.post(self.current_map .. ":/base/spawner", "spawn_enemies", { difficulty = self.difficulty })
         msg.post(sender, "enable")
     elseif message_id == PROXY_UNLOADED then
-        if self.changing_level then
-            self.changing_level = false
-            change_level(self)
-        end
     elseif message_id == CHANGE_LEVEL then
         msg.post("/levels#" .. self.current_map, "unload")
-        self.changing_level = true
+        change_level(self)
     elseif message_id == END_GAME then
         msg.post("main:/main#main", END_GAME, { points = message.monsters_count })
     end

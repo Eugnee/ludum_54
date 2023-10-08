@@ -81,8 +81,8 @@ nodes {
 }
 nodes {
   position {
-    x: 202.0
-    y: 153.0
+    x: 420.0
+    y: 280.0
     z: 0.0
     w: 1.0
   }
@@ -113,7 +113,7 @@ nodes {
   type: TYPE_BOX
   blend_mode: BLEND_MODE_ALPHA
   texture: "gui/Points-icon-export"
-  id: "box"
+  id: "monsters"
   xanchor: XANCHOR_NONE
   yanchor: YANCHOR_NONE
   pivot: PIVOT_CENTER
@@ -139,8 +139,8 @@ nodes {
 }
 nodes {
   position {
-    x: 335.0
-    y: 153.0
+    x: 540.0
+    y: 280.0
     z: 0.0
     w: 1.0
   }

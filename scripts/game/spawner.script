@@ -9,7 +9,7 @@ randomseed(os.time())
 local SPAWN_HERO = hash("spawn_hero")
 local SPAWN_ENEMIES = hash("spawn_enemies")
 
-local MAX_DRAGONS = 3
+local MAX_DRAGONS = 2
 local MAX_BUBBLES = 5
 
 local function spawn_hero(hp, spawn_point)
@@ -35,6 +35,10 @@ local function random_unit_pos(self)
 	end
 	x, y = coords_to_screen(rand_tile.x, rand_tile.y, 16)
 	self.free_tiles[num] = nil
+	self.free_tiles[num-1] = nil
+	self.free_tiles[num-2] = nil
+	self.free_tiles[num+1] = nil
+	self.free_tiles[num+2] = nil
 	return vmath.vector3(x, y, UNITS_Z_INDEX)
 end
 
