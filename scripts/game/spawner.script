@@ -9,7 +9,7 @@ randomseed(os.time())
 local SPAWN_HERO = hash("spawn_hero")
 local SPAWN_ENEMIES = hash("spawn_enemies")
 
-local MAX_DRAGONS = 3
+local MAX_DRAGONS = 2
 local MAX_BUBBLES = 5
 
 local function spawn_hero(hp, spawn_point)
