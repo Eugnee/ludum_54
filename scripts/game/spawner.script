@@ -35,6 +35,10 @@ local function random_unit_pos(self)
 	end
 	x, y = coords_to_screen(rand_tile.x, rand_tile.y, 16)
 	self.free_tiles[num] = nil
+	self.free_tiles[num-1] = nil
+	self.free_tiles[num-2] = nil
+	self.free_tiles[num+1] = nil
+	self.free_tiles[num+2] = nil
 	return vmath.vector3(x, y, UNITS_Z_INDEX)
 end
 
