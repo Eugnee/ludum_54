@@ -28,7 +28,7 @@ local function random_unit_pos(self)
 	local num = random(1, self.free_tiles_count)
 	local rand_tile = self.free_tiles[num]
 	local while_counter = 0
-	while rand_tile == nil and while_counter <= 5 do
+	while rand_tile == nil and while_counter <= 10 do
 		num = random(1, self.free_tiles_count)
 		rand_tile = self.free_tiles[num]
 		while_counter = while_counter + 1
@@ -63,13 +63,15 @@ local function getFreeTiles()
 	local free_tiles = {}
 	local free_tiles_count = 1
 	local mid_y = ceil(h / 2)
-	for y = mid_y + 1, h - 10, 3 do
-		for x = 6, w - 3, 2 do
+	for y = mid_y + 1, h - 9, 3 do
+		for x = 8, w - 4, 2 do
 			if tilemap.get_tile("/map#map", hash("floor"), x, y) > 0 then
-				if tilemap.get_tile("/map#map", hash("wall"), x, y) == 0 then
-					free_tiles[free_tiles_count] = { x = x, y = y }
-					free_tiles_count = free_tiles_count + 1
-				end
+				-- if tilemap.get_tile("/map#map", hash("wall"), x, y) == 0
+				-- 	and tilemap.get_tile("/map#map", hash("swall"), x, y) == 0
+				-- 	and tilemap.get_tile("/map#map", hash("bwall"), x, y) == 0
+				-- 	and tilemap.get_tile("/map#map", hash("door"), x, y) == 0
+				free_tiles[free_tiles_count] = { x = x, y = y }
+				free_tiles_count = free_tiles_count + 1
 			end
 		end
 	end
@@ -82,8 +84,6 @@ function init(self)
 	local free_tiles, free_tiles_count = getFreeTiles()
 	self.free_tiles_count = free_tiles_count
 	self.free_tiles = {}
-
-	pprint(self.free_tiles)
 	for i in ipairs(free_tiles) do
 		self.free_tiles[i] = free_tiles[i]
 	end

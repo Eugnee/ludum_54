@@ -4442,7 +4442,7 @@ layers {
   }
 }
 layers {
-  id: "wall"
+  id: "door"
   z: 3.0E-4
   is_visible: 1
   cell {
@@ -6924,7 +6924,7 @@ layers {
   }
 }
 layers {
-  id: "wall"
+  id: "swall"
   z: 5.0E-4
   is_visible: 1
   cell {
@@ -8952,14 +8952,6 @@ layers {
     rotate90: 0
   }
   cell {
-    x: 11
-    y: 16
-    tile: 921
-    h_flip: 0
-    v_flip: 0
-    rotate90: 0
-  }
-  cell {
     x: 12
     y: 16
     tile: 922
@@ -9953,7 +9945,7 @@ layers {
   }
 }
 layers {
-  id: "wall"
+  id: "bwall"
   z: 6.0E-4
   is_visible: 1
   cell {
