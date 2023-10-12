@@ -3122,7 +3122,7 @@ layers {
   }
 }
 layers {
-  id: "door"
+  id: "wall"
   z: 3.0E-4
   is_visible: 1
   cell {
@@ -3207,7 +3207,7 @@ layers {
   }
 }
 layers {
-  id: "top wall"
+  id: "wall"
   z: 4.0E-4
   is_visible: 1
   cell {
@@ -6228,7 +6228,7 @@ layers {
   }
 }
 layers {
-  id: "side walls"
+  id: "wall"
   z: 5.0E-4
   is_visible: 1
   cell {
@@ -7153,7 +7153,7 @@ layers {
   }
 }
 layers {
-  id: "bottom wall"
+  id: "wall"
   z: 6.0E-4
   is_visible: 1
   cell {

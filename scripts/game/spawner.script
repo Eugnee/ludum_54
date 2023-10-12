@@ -25,20 +25,19 @@ function coords_to_screen(x, y, tile_size)
 end
 
 local function random_unit_pos(self)
-	local num = random(1, self.free_tiles_count - 1)
+	local num = random(1, self.free_tiles_count)
 	local rand_tile = self.free_tiles[num]
 	local while_counter = 0
 	while rand_tile == nil and while_counter <= 5 do
-		num = random(1, self.free_tiles_count - 1)
+		num = random(1, self.free_tiles_count)
 		rand_tile = self.free_tiles[num]
 		while_counter = while_counter + 1
 	end
+	if rand_tile == nil then
+		pprint("Empty tiles", self.free_tiles)
+	end
 	x, y = coords_to_screen(rand_tile.x, rand_tile.y, 16)
 	self.free_tiles[num] = nil
-	self.free_tiles[num-1] = nil
-	self.free_tiles[num-2] = nil
-	self.free_tiles[num+1] = nil
-	self.free_tiles[num+2] = nil
 	return vmath.vector3(x, y, UNITS_Z_INDEX)
 end
 
@@ -51,18 +50,42 @@ local function spawn_dragon(self)
 		{ hero_id = self.hero_id, bullet_url = msg.url("/base/factories#enemy_bullet") })
 end
 
-function init(self)
+
+local FREE_TILES_CACHE = {}
+local FREE_TILES_COUNT_CACHE = {}
+
+local function getFreeTiles()
+	local map = msg.url().socket
+	if FREE_TILES_CACHE[map] ~= nil then
+		return FREE_TILES_CACHE[map], FREE_TILES_COUNT_CACHE[map]
+	end
 	local level_x, level_y, w, h = tilemap.get_bounds("/map#map")
-	self.free_tiles = {}
-	self.free_tiles_count = 1
+	local free_tiles = {}
+	local free_tiles_count = 1
 	local mid_y = ceil(h / 2)
-	for y = mid_y, h - 10 do
-		for x = 5, w - 5 do
+	for y = mid_y + 1, h - 10, 3 do
+		for x = 6, w - 3, 2 do
 			if tilemap.get_tile("/map#map", hash("floor"), x, y) > 0 then
-				self.free_tiles[self.free_tiles_count] = { x = x, y = y }
-				self.free_tiles_count = self.free_tiles_count + 1
+				if tilemap.get_tile("/map#map", hash("wall"), x, y) == 0 then
+					free_tiles[free_tiles_count] = { x = x, y = y }
+					free_tiles_count = free_tiles_count + 1
+				end
 			end
 		end
+	end
+	FREE_TILES_CACHE[map] = free_tiles
+	FREE_TILES_COUNT_CACHE[map] = free_tiles_count
+	return free_tiles, free_tiles_count
+end
+
+function init(self)
+	local free_tiles, free_tiles_count = getFreeTiles()
+	self.free_tiles_count = free_tiles_count
+	self.free_tiles = {}
+
+	pprint(self.free_tiles)
+	for i in ipairs(free_tiles) do
+		self.free_tiles[i] = free_tiles[i]
 	end
 end
 
