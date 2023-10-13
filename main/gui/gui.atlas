@@ -10,6 +10,14 @@ images {
   image: "/assets/stats/Points-icon-export.png"
   sprite_trim_mode: SPRITE_TRIM_MODE_OFF
 }
+images {
+  image: "/assets/menu/HEARTS2.png"
+  sprite_trim_mode: SPRITE_TRIM_MODE_OFF
+}
+images {
+  image: "/assets/menu/POINTS2.png"
+  sprite_trim_mode: SPRITE_TRIM_MODE_OFF
+}
 animations {
   id: "start"
   images {

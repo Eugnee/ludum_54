@@ -1,0 +1,8 @@
+local CHANGE_MONSTETS_COUNT = hash("change_monsters_count")
+
+function on_message(self, message_id, message, sender)
+    if message_id == CHANGE_MONSTETS_COUNT then
+        local node = gui.get_node("monsters_count")
+        gui.set_text(node, message.count)
+    end
+end

@@ -2181,7 +2181,7 @@ layers {
   }
 }
 layers {
-  id: "top wall"
+  id: "wall"
   z: 0.1
   is_visible: 1
   cell {
@@ -3407,9 +3407,9 @@ layers {
   }
 }
 layers {
-  id: "wall shadows"
+  id: "shadow"
   z: 0.11
-  is_visible: 0
+  is_visible: 1
   cell {
     x: 1
     y: 2
@@ -5588,7 +5588,7 @@ layers {
   }
 }
 layers {
-  id: "side walls"
+  id: "wall"
   z: 0.13
   is_visible: 1
   cell {
@@ -7721,7 +7721,7 @@ layers {
   }
 }
 layers {
-  id: "bot wall"
+  id: "wall"
   z: 0.3
   is_visible: 1
   cell {
