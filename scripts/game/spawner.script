@@ -66,12 +66,14 @@ local function getFreeTiles()
 	for y = mid_y + 1, h - 9, 3 do
 		for x = 8, w - 4, 2 do
 			if tilemap.get_tile("/map#map", hash("floor"), x, y) > 0 then
-				-- if tilemap.get_tile("/map#map", hash("wall"), x, y) == 0
-				-- 	and tilemap.get_tile("/map#map", hash("swall"), x, y) == 0
-				-- 	and tilemap.get_tile("/map#map", hash("bwall"), x, y) == 0
-				-- 	and tilemap.get_tile("/map#map", hash("door"), x, y) == 0
-				free_tiles[free_tiles_count] = { x = x, y = y }
-				free_tiles_count = free_tiles_count + 1
+				if tilemap.get_tile("/map#map", hash("wall"), x, y) == 0
+					and tilemap.get_tile("/map#map", hash("swall"), x, y) == 0
+					and tilemap.get_tile("/map#map", hash("bwall"), x, y) == 0
+					and tilemap.get_tile("/map#map", hash("door"), x, y) == 0
+				then
+					free_tiles[free_tiles_count] = { x = x, y = y }
+					free_tiles_count = free_tiles_count + 1
+				end
 			end
 		end
 	end
