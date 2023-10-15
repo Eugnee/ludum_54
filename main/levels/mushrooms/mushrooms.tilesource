@@ -1,9 +1,9 @@
-image: "/assets/maps/Mushroom-forest-Tiles.png"
+image: "/assets/maps/MUSHROOM-FOREST-TILES.png"
 tile_width: 16
 tile_height: 16
 tile_margin: 0
 tile_spacing: 0
-collision: "/assets/maps/Mushroom-forest-Tiles.png"
+collision: "/assets/maps/MUSHROOM-FOREST-TILES.png"
 material_tag: "tile"
 convex_hulls {
   index: 0
