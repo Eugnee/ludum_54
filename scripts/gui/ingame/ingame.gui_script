@@ -9,10 +9,9 @@ local function set_castle_images(cur_hp, max_hp)
     for i = 1, HP_BAR_LEN - 1, 1 do
         if v == 1 then
             return
-        elseif v >= (1 - p * i) then
+        elseif v <= (1 - p * i) then
             local node = gui.get_node("hp" .. HP_BAR_LEN - i + 1)
             gui.set_enabled(node, false)
-            return
         end
     end
 end
