@@ -10,6 +10,7 @@ local SPAWN_HERO = hash("spawn_hero")
 local SPAWN_ENEMIES = hash("spawn_enemies")
 
 local MAX_DRAGONS = 2
+local MAX_DOLPHINS = 1
 local MAX_BUBBLES = 5
 
 local function spawn_hero(hp, spawn_point)
@@ -48,6 +49,11 @@ end
 local function spawn_dragon(self)
 	return factory.create("/base/factories#dragon", random_unit_pos(self), nil,
 		{ hero_id = self.hero_id, bullet_url = msg.url("/base/factories#enemy_bullet") })
+end
+
+local function spawn_dolphin(self)
+	return factory.create("/base/factories#dolphin", random_unit_pos(self), nil,
+		{ hero_id = self.hero_id })
 end
 
 
@@ -109,6 +115,15 @@ function on_message(self, message_id, message, sender)
 		if dragons_count > 0 then
 			for i = 1, dragons_count do
 				spawn_dragon(self)
+			end
+		end
+		local doplhins_count = random(0, message.difficulty - 1)
+		if doplhins_count > MAX_DOLPHINS then
+			doplhins_count = MAX_DOLPHINS
+		end
+		if doplhins_count > 0 and message.difficulty >= 3 and dragons_count <= 1 then
+			for i = 1, doplhins_count do
+				spawn_dolphin(self)
 			end
 		end
 	end

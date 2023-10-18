@@ -43,6 +43,7 @@ function on_message(self, message_id, message, sender)
                     message.normal;
                 go.set_position(go.get_position() + comp);
                 self.correction = self.correction + comp;
+                self.target = go.get_position()
             end
         end
     end

@@ -1,6 +1,6 @@
 components {
-  id: "bullet"
-  component: "/scripts/weapon/bullet.script"
+  id: "follower"
+  component: "/scripts/enemies/flight_follower.script"
   position {
     x: 0.0
     y: 0.0
@@ -12,40 +12,24 @@ components {
     z: 0.0
     w: 1.0
   }
-}
-embedded_components {
-  id: "sprite"
-  type: "sprite"
-  data: "tile_set: \"/main/weapon/bullet.tilesource\"\n"
-  "default_animation: \"anim\"\n"
-  "material: \"/builtins/materials/sprite.material\"\n"
-  "blend_mode: BLEND_MODE_ALPHA\n"
-  ""
-  position {
-    x: 0.0
-    y: 0.0
-    z: 0.0
-  }
-  rotation {
-    x: 0.0
-    y: 0.0
-    z: 0.70710677
-    w: 0.70710677
+  properties {
+    id: "speed"
+    value: "100.0"
+    type: PROPERTY_TYPE_NUMBER
   }
 }
 embedded_components {
-  id: "collisionobject"
+  id: "collider"
   type: "collisionobject"
   data: "collision_shape: \"\"\n"
   "type: COLLISION_OBJECT_TYPE_TRIGGER\n"
   "mass: 0.0\n"
   "friction: 0.1\n"
   "restitution: 0.5\n"
-  "group: \"bullet\"\n"
-  "mask: \"blocked\"\n"
+  "group: \"bat\"\n"
   "mask: \"hero\"\n"
-  "mask: \"enemy\"\n"
   "mask: \"bat\"\n"
+  "mask: \"bullet\"\n"
   "embedded_collision_shape {\n"
   "  shapes {\n"
   "    shape_type: TYPE_SPHERE\n"
@@ -63,7 +47,7 @@ embedded_components {
   "    index: 0\n"
   "    count: 1\n"
   "  }\n"
-  "  data: 7.5\n"
+  "  data: 10.0\n"
   "}\n"
   "linear_damping: 0.0\n"
   "angular_damping: 0.0\n"
@@ -80,5 +64,30 @@ embedded_components {
     y: 0.0
     z: 0.0
     w: 1.0
+  }
+}
+embedded_components {
+  id: "sprite"
+  type: "sprite"
+  data: "tile_set: \"/main/enemies/bat.tilesource\"\n"
+  "default_animation: \"anim\"\n"
+  "material: \"/builtins/materials/sprite.material\"\n"
+  "blend_mode: BLEND_MODE_ALPHA\n"
+  ""
+  position {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  scale {
+    x: 2.0
+    y: 2.0
+    z: 1.0
   }
 }

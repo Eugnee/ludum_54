@@ -31,6 +31,7 @@ embedded_components {
   "mask: \"bullet\"\n"
   "mask: \"enemy\"\n"
   "mask: \"change_level\"\n"
+  "mask: \"bat\"\n"
   "embedded_collision_shape {\n"
   "  shapes {\n"
   "    shape_type: TYPE_BOX\n"

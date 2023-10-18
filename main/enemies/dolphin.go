@@ -1,19 +1,4 @@
 components {
-  id: "base"
-  component: "/scripts/enemies/base.script"
-  position {
-    x: 0.0
-    y: 0.0
-    z: 0.0
-  }
-  rotation {
-    x: 0.0
-    y: 0.0
-    z: 0.0
-    w: 1.0
-  }
-}
-components {
   id: "random_move"
   component: "/scripts/enemies/random_move.script"
   position {
@@ -27,10 +12,35 @@ components {
     z: 0.0
     w: 1.0
   }
+  properties {
+    id: "step"
+    value: "25.0"
+    type: PROPERTY_TYPE_NUMBER
+  }
 }
 components {
-  id: "distant"
-  component: "/scripts/enemies/distant.script"
+  id: "base"
+  component: "/scripts/enemies/base.script"
+  position {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  properties {
+    id: "hp"
+    value: "15.0"
+    type: PROPERTY_TYPE_NUMBER
+  }
+}
+components {
+  id: "bat_spawner"
+  component: "/scripts/enemies/bat_spawner.script"
   position {
     x: 0.0
     y: 0.0
@@ -46,7 +56,7 @@ components {
 embedded_components {
   id: "sprite"
   type: "sprite"
-  data: "tile_set: \"/main/enemies/dragon.tilesource\"\n"
+  data: "tile_set: \"/main/enemies/dolphin.tilesource\"\n"
   "default_animation: \"move\"\n"
   "material: \"/builtins/materials/sprite.material\"\n"
   "blend_mode: BLEND_MODE_ALPHA\n"
@@ -78,10 +88,10 @@ embedded_components {
   "mask: \"bullet\"\n"
   "embedded_collision_shape {\n"
   "  shapes {\n"
-  "    shape_type: TYPE_BOX\n"
+  "    shape_type: TYPE_SPHERE\n"
   "    position {\n"
-  "      x: -1.0\n"
-  "      y: -3.0\n"
+  "      x: -7.0\n"
+  "      y: -6.0\n"
   "      z: 0.0\n"
   "    }\n"
   "    rotation {\n"
@@ -91,11 +101,9 @@ embedded_components {
   "      w: 1.0\n"
   "    }\n"
   "    index: 0\n"
-  "    count: 3\n"
+  "    count: 1\n"
   "  }\n"
-  "  data: 11.3431015\n"
-  "  data: 22.30236\n"
-  "  data: 10.0\n"
+  "  data: 25.0\n"
   "}\n"
   "linear_damping: 0.0\n"
   "angular_damping: 0.0\n"
