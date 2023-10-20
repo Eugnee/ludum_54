@@ -1,4 +1,4 @@
-go.property("hp", 100)
+go.property("hp", 200)
 go.property("monsters_count", 0)
 
 local CHANGE_HP_BAR = hash("change_hp_bar")

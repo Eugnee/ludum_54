@@ -70,7 +70,7 @@ local function getFreeTiles()
 	local free_tiles_count = 1
 	local mid_y = ceil(h / 2)
 	for y = mid_y + 1, h, 3 do
-		for x = 1, w, 2 do
+		for x = 2, w - 2, 2 do
 			if tilemap.get_tile("/map#map", hash("floor"), x, y) > 0 then
 				if tilemap.get_tile("/map#map", hash("wall"), x, y) == 0
 					and tilemap.get_tile("/map#map", hash("swall"), x, y) == 0
