@@ -45,6 +45,7 @@ embedded_components {
   "mask: \"blocked\"\n"
   "mask: \"hero\"\n"
   "mask: \"enemy\"\n"
+  "mask: \"bat\"\n"
   "embedded_collision_shape {\n"
   "  shapes {\n"
   "    shape_type: TYPE_SPHERE\n"

@@ -1,0 +1,23 @@
+go.property("hp", 200)
+go.property("monsters_count", 0)
+
+local CHANGE_HP_BAR = hash("change_hp_bar")
+local CHANGE_HP = hash("change_hp")
+local INC_MONSTERS_COUNT = hash("inc_monsters_count")
+
+function init(self)
+    self.max_hp = self.hp
+end
+
+function on_message(self, message_id, message, sender)
+    if message_id == CHANGE_HP then
+        if message.hp <= 0 then
+            msg.post("/base#controller", "end_game", { monsters_count = self.monsters_count })
+        end
+        self.hp = message.hp
+        msg.post("#ingame", CHANGE_HP_BAR, { hp = self.hp, max_hp = self.max_hp })
+    elseif message_id == INC_MONSTERS_COUNT then
+        self.monsters_count = self.monsters_count + 1
+        msg.post("#ingame", "change_monsters_count", { count = self.monsters_count })
+    end
+end

@@ -1,24 +1,39 @@
 function init(self)
-	msg.post(".", "acquire_input_focus")
-	msg.post("#menu_proxy", "load")
+	msg.post("/gui#menu_proxy", "load")
 	sound.play("#music")
+	self.end_game = false
+	self.cur_proxy = nil
+	self.points = 0
 end
 
-function final(self)
-	msg.post(".", "release_input_focus")
-end
+local END_GAME = hash("end_game")
+local PROXY_LOADED = hash("proxy_loaded")
+local PROXY_UNLOADED = hash("proxy_unloaded")
 
+---@param sender url string to hash
 function on_message(self, message_id, message, sender)
 	if message_id == hash("start") then
-		msg.post("#menu_proxy", "unload")
+		msg.post(self.cur_proxy, "unload")
 		msg.post("#controller_proxy", "load")
 	elseif message_id == hash("show_menu") then
+		msg.post(self.cur_proxy, "unload")
 		msg.post("#menu_proxy", "load")
-		msg.post("#controller_proxy", "unload")
 	elseif message_id == hash("exit") then
 		sys.exit(0)
-	elseif message_id == hash("proxy_loaded") then
+	elseif message_id == PROXY_LOADED then
+		self.cur_proxy = sender
+		if self.end_game then
+			self.end_game = false
+			msg.post(msg.url(sender.fragment, "/gui", "statistic"), "set_points", { points = self.points })
+		end
 		msg.post(sender, "enable")
-	elseif message_id == hash("proxy_unloaded") then
+		msg.post(sender, "acquire_input_focus")
+	elseif message_id == PROXY_UNLOADED then
+		msg.post(sender, "release_input_focus")
+	elseif message_id == END_GAME then
+		self.points = message.points
+		msg.post(self.cur_proxy, "unload")
+		msg.post("/gui#game_end", "load")
+		self.end_game = true
 	end
 end

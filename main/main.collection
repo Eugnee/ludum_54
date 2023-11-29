@@ -2,26 +2,10 @@ name: "main"
 scale_along_z: 0
 embedded_instances {
   id: "main"
+  children: "gui"
   data: "components {\n"
   "  id: \"main\"\n"
   "  component: \"/scripts/main.script\"\n"
-  "  position {\n"
-  "    x: 0.0\n"
-  "    y: 0.0\n"
-  "    z: 0.0\n"
-  "  }\n"
-  "  rotation {\n"
-  "    x: 0.0\n"
-  "    y: 0.0\n"
-  "    z: 0.0\n"
-  "    w: 1.0\n"
-  "  }\n"
-  "  property_decls {\n"
-  "  }\n"
-  "}\n"
-  "components {\n"
-  "  id: \"menu_proxy\"\n"
-  "  component: \"/main/gui/menu/menu_proxy.collectionproxy\"\n"
   "  position {\n"
   "    x: 0.0\n"
   "    y: 0.0\n"
@@ -59,7 +43,7 @@ embedded_instances {
   "  data: \"sound: \\\"/assets/music/Pixel-song.ogg\\\"\\n"
   "looping: 1\\n"
   "group: \\\"master\\\"\\n"
-  "gain: 0.5\\n"
+  "gain: 0.4\\n"
   "pan: 0.0\\n"
   "speed: 1.0\\n"
   "loopcount: 0\\n"
@@ -74,6 +58,60 @@ embedded_instances {
   "    y: 0.0\n"
   "    z: 0.0\n"
   "    w: 1.0\n"
+  "  }\n"
+  "}\n"
+  ""
+  position {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  scale3 {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+  }
+}
+embedded_instances {
+  id: "gui"
+  data: "components {\n"
+  "  id: \"game_end\"\n"
+  "  component: \"/main/gui/game_end/game_end.collectionproxy\"\n"
+  "  position {\n"
+  "    x: 0.0\n"
+  "    y: 0.0\n"
+  "    z: 0.0\n"
+  "  }\n"
+  "  rotation {\n"
+  "    x: 0.0\n"
+  "    y: 0.0\n"
+  "    z: 0.0\n"
+  "    w: 1.0\n"
+  "  }\n"
+  "  property_decls {\n"
+  "  }\n"
+  "}\n"
+  "components {\n"
+  "  id: \"menu_proxy\"\n"
+  "  component: \"/main/gui/menu/menu_proxy.collectionproxy\"\n"
+  "  position {\n"
+  "    x: 0.0\n"
+  "    y: 0.0\n"
+  "    z: 0.0\n"
+  "  }\n"
+  "  rotation {\n"
+  "    x: 0.0\n"
+  "    y: 0.0\n"
+  "    z: 0.0\n"
+  "    w: 1.0\n"
+  "  }\n"
+  "  property_decls {\n"
   "  }\n"
   "}\n"
   ""

@@ -1,0 +1,26 @@
+local CHANGE_MONSTETS_COUNT = hash("change_monsters_count")
+local CHANGE_HP_BAR = hash("change_hp_bar")
+
+local HP_BAR_LEN = 5
+
+local function set_castle_images(cur_hp, max_hp)
+    local v = cur_hp / max_hp
+    local p = 1 / HP_BAR_LEN
+    for i = 1, HP_BAR_LEN - 1, 1 do
+        if v == 1 then
+            return
+        elseif v <= (1 - p * i) then
+            local node = gui.get_node("hp" .. HP_BAR_LEN - i + 1)
+            gui.set_enabled(node, false)
+        end
+    end
+end
+
+function on_message(self, message_id, message, sender)
+    if message_id == CHANGE_MONSTETS_COUNT then
+        local node = gui.get_node("monsters_count")
+        gui.set_text(node, message.count)
+    elseif message_id == CHANGE_HP_BAR then
+        set_castle_images(message.hp, message.max_hp)
+    end
+end

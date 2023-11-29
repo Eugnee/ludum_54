@@ -20,6 +20,7 @@ function get_damage(self, hp)
             vmath.vector4(1, 0, 0, 1), go.EASING_LINEAR, 0.2, 0, function() self.tinting = false end);
     end
     if self.hp <= 0 then
+        msg.post("controller:/state#hero_state", "inc_monsters_count")
         self.dead = true
         msg.post(".", "dead")
         animate:play_animation(self, "#sprite", DEATH, true, function()

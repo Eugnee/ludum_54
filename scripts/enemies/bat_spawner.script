@@ -1,0 +1,11 @@
+go.property("hero_id", hash("hero"))
+
+local function spawn_bat(self)
+    local pos = go.get_position()
+    pos.z = 0.22
+    return factory.create("/base/factories#bat", pos, nil, { hero_id = self.hero_id })
+end
+
+function init(self)
+    self.bat_swawner = timer.delay(3, true, spawn_bat)
+end
